@@ -28,7 +28,17 @@ add dependencies
     </dependency>
 </dependencies>
 ```
+## Database
+```sql
+create table users (
+ username text,
+ password text,
+ enabled boolean);
 
+create table authorities (
+ username text,
+ authority text);
+```
 ## Interaction
 The pattern is
 ![interaction](./images/interaction.png)

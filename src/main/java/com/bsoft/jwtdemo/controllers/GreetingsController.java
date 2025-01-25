@@ -61,13 +61,14 @@ public class GreetingsController {
             Map<String, Object> map = new HashMap<>();
             map.put("message", "Bad credentials");
             map.put("status", false);
-            log.error("Authenticated not succeeded");
+            log.error("Authenticated not succeeded: {}", e.getMessage());
 
             return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
         }
         log.info("Authenticated user: {} succeeded", authentication.getName());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        // through the previous step the user is marked as authenticated for spring-boot context
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String jwtToken = jwtUtils.generateTokenFromUsername(userDetails);
@@ -78,6 +79,7 @@ public class GreetingsController {
 
         LoginResponse response = new LoginResponse(jwtToken, userDetails.getUsername(), roles);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
+        //return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

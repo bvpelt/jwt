@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,8 +19,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -27,31 +31,59 @@ import javax.sql.DataSource;
 @Slf4j
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 @Configuration
 public class SecurityConfig {
 
-    private final DataSource dataSource;
+    @Autowired
+    private DataSource dataSource;
 
-    private final BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
-    private final AuthEntryPointJwt unauthorizedHandler;
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration builder) throws Exception {
+        return builder.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((requests) -> {
+
+        http.authorizeHttpRequests((requests) -> {
                     requests.requestMatchers("/actuator/**", "/api/signin").permitAll()
                             .anyRequest().authenticated();
-                })
-                .sessionManagement(session -> {
+                });
+
+        // no session state is maintained between requests
+        http.sessionManagement(session -> {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 });
+
+        // add exception handler
+        http.exceptionHandling(exception -> {
+            exception.authenticationEntryPoint(unauthorizedHandler);
+        });
+
+        //http.httpBasic(Customizer.withDefaults());
+
+        // only access from same origin h2-console
+        http.headers(headers ->
+            headers.frameOptions(frameOptions -> frameOptions.sameOrigin()
+            )
+        );
+
+        // h2-console
+        http.csrf(csrf -> csrf.disable());
+
+
+        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
 
@@ -68,6 +100,12 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user1, admin);
+        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+        userDetailsManager.createUser(user1);
+        userDetailsManager.createUser(admin);
+
+        return userDetailsManager;
     }
+
+
 }
