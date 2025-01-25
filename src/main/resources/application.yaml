@@ -1,0 +1,26 @@
+application:
+  basePath: "/api"
+
+spring:
+  application:
+    name: JWTDemo
+    jwtSecret: ThisIsAVerySecretKey123456543#$%
+    jwtExpirationMs: 10000000000000 # milliseconds
+  security:
+    user:
+      name: admin
+      password: demo@123
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/jwt
+    username: testuser
+    password: 12345
+  jpa:
+    database: POSTGRESQL
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        fomat_sql: true
