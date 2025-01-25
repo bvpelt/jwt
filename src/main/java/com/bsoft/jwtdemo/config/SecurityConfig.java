@@ -5,6 +5,7 @@ import com.bsoft.jwtdemo.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -90,6 +91,15 @@ public class SecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
+    }
+
+    /*
+
+    // Runs every time the spring-boot app is started
+
+    @Bean
     public UserDetailsService userDetailsService() {
         UserDetails user1 = User.withUsername("user1")
                 .password(passwordEncoder.encode("password1"))
@@ -107,5 +117,32 @@ public class SecurityConfig {
         return userDetailsManager;
     }
 
+    @Bean
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
+    }
+
+    // Run after initialisation to create users
+    @Bean
+    public CommandLineRunner initData(UserDetailsService userDetailsService) {
+        return args -> {
+            JdbcUserDetailsManager manager = (JdbcUserDetailsManager) userDetailsService;
+
+            UserDetails user1 = User.withUsername("user1")
+                    .password(passwordEncoder.encode("password1"))
+                    .roles("USER")
+                    .build();
+            UserDetails admin = User.withUsername("admin")
+                    .password(passwordEncoder.encode("adminPass"))
+                    .roles("ADMIN")
+                    .build();
+
+            JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager(dataSource);
+            userDetailsManager.createUser(user1);
+            userDetailsManager.createUser(admin);
+        };
+    }
+
+     */
 
 }

@@ -4,7 +4,7 @@ application:
 spring:
   application:
     name: JWTDemo
-    jwtSecret: ThisIsAVerySecretKey123456543#$%
+    jwtSecret: "ThisIsAVerySecretKey12345654338250283450apalsdjfalskdjfalksjdfkasdlkfjalksdjflkasdjf"
     jwtExpirationMs: 10000000000000 # milliseconds
   security:
     user:
