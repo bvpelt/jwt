@@ -58,7 +58,7 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests((requests) -> {
-                    requests.requestMatchers("/actuator/**", "/api/signin").permitAll()
+                    requests.requestMatchers("/actuator/**", "/api/signin", "/api/hello").permitAll()
                             .anyRequest().authenticated();
                 });
 

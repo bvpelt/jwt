@@ -41,6 +41,11 @@ create table authorities (
  username text,
  authority text);
 ```
+
+## Intillij
+
+See https://techblog.dac.digital/using-the-inbuilt-http-client-in-intellij-idea-8a362b84ba6b on howto use authentication
+
 ## Interaction
 The pattern is
 ![interaction](./images/interaction.png)
