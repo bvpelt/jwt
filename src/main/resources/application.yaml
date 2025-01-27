@@ -1,6 +1,16 @@
 application:
   basePath: "/api"
 
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+      hibernate:
+        SQL: DEBUG
+    com:
+      bsoft: DEBUG
+
 spring:
   application:
     name: JWTDemo

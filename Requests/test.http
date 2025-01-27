@@ -11,3 +11,13 @@ GET http://localhost:8080/api/hello
 Accept: application/json
 
 ###
+GET http://localhost:8080/api/user
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczNzk5MDU2NywiZXhwIjoxMTczNzk5MDU2N30.zoHQLciq0RCyg6GSLXjz5tnvWCkTxm0CmxkTpMw81SKw3xi1bVuSejm0xOhDaUKr
+
+###
+GET http://localhost:8080/api/admin
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ1c2VyMSIsImlhdCI6MTczNzk5MDU2NywiZXhwIjoxMTczNzk5MDU2N30.zoHQLciq0RCyg6GSLXjz5tnvWCkTxm0CmxkTpMw81SKw3xi1bVuSejm0xOhDaUKr
+
+###
