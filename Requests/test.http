@@ -7,7 +7,7 @@ Content-Type: application/json
 }
 
 > {%
-    client.global.set("auth_token1", response.body.jwtToken);
+    client.global.set("user_token", response.body.jwtToken);
     client.log("Logging Bearer Token.");
     client.log("Bearer " + response.body.jwtToken);
 %}
@@ -19,7 +19,7 @@ Accept: application/json
 ###
 GET http://localhost:8080/api/user
 Accept: application/json
-Authorization: Bearer {{auth_token1}}
+Authorization: Bearer {{user_token1}}
 
 ###
 POST http://localhost:8080/api/signin
@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 > {%
-    client.global.set("auth_token2", response.body.jwtToken);
+    client.global.set("admin_token", response.body.jwtToken);
     client.log("Logging Bearer Token.");
     client.log("Bearer " + response.body.jwtToken);
 %}
@@ -39,5 +39,5 @@ Content-Type: application/json
 ###
 GET http://localhost:8080/api/admin
 Accept: application/json
-Authorization: Bearer {{auth_token2}}
+Authorization: Bearer {{admin_token}}
 
